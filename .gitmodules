@@ -1,0 +1,3 @@
+[submodule "taiga-ui"]
+	path = taiga-ui
+	url = git@github.com:taiga-family/taiga-ui.git

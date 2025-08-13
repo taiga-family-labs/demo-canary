@@ -1,0 +1,17 @@
+{
+    "name": "demo-canary",
+    "private": true,
+    "homepage": "https://github.com/taiga-family-labs/demo-canary#readme",
+    "bugs": {
+        "url": "https://github.com/taiga-family-labs/demo-canary/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/taiga-family-labs/demo-canary.git"
+    },
+    "license": "MIT",
+    "prettier": "@taiga-ui/prettier-config",
+    "dependencies": {
+        "@taiga-ui/prettier-config": "0.310.0"
+    }
+}
