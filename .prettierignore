@@ -1,2 +1,4 @@
 taiga-ui
 package-lock.json
+dist
+.nx

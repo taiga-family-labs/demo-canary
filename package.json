@@ -10,6 +10,10 @@
         "url": "git+https://github.com/taiga-family-labs/demo-canary.git"
     },
     "license": "MIT",
+    "workspaces": [
+        "taiga-ui",
+        "taiga-ui/projects/*"
+    ],
     "scripts": {
         "prettier": "prettier ."
     },
