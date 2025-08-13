@@ -5,14 +5,14 @@
     "bugs": {
         "url": "https://github.com/taiga-family-labs/demo-canary/issues"
     },
-    "scripts": {
-        "prettier": "prettier ."
-    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/taiga-family-labs/demo-canary.git"
     },
     "license": "MIT",
+    "scripts": {
+        "prettier": "prettier ."
+    },
     "prettier": "@taiga-ui/prettier-config",
     "dependencies": {
         "@taiga-ui/prettier-config": "0.310.0"
