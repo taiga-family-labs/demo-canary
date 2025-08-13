@@ -5,6 +5,9 @@
     "bugs": {
         "url": "https://github.com/taiga-family-labs/demo-canary/issues"
     },
+    "scripts": {
+        "prettier": "prettier ."
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/taiga-family-labs/demo-canary.git"
