@@ -32,9 +32,8 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: 'submodule-update-$(date +%s)'
+          branch: submodule-update
           commit-message: 'chore: update submodules'
-          title: "Submodule Updates $(date +'%Y-%m-%d')"
-          body: 'Automated update of Git submodules to their latest commits.'
-          labels: 'dependencies, automated'
-          base: 'main'
+          title: Submodule Updates
+          body: Automated update of Git submodules to their latest commits
+          base: main
