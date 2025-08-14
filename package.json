@@ -15,7 +15,9 @@
         "taiga-ui/projects/*"
     ],
     "scripts": {
-        "prettier": "prettier ."
+        "prettier": "prettier .",
+        "submodule:update": "git submodule update --rebase --remote",
+        "submodule:reset": "git submodule | awk '{ git restore --staged $2 }' && git submodule update --init --recursive"
     },
     "prettier": "@taiga-ui/prettier-config",
     "dependencies": {
