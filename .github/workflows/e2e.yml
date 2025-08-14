@@ -1,0 +1,124 @@
+name: ⚙️ E2E tests
+on:
+  pull_request:
+
+env:
+  RETRY_COUNT: 2
+  PW_THRESHOLD: 0.3
+  PW_HIDE_TEXT: 'true'
+  PW_RESULT: ./taiga-ui/projects/demo-playwright/tests-results
+  SNAPSHOT_PATH_TEMPLATE: '{testDir}/snapshots/{testFilePath}/{arg}{ext}'
+
+jobs:
+  playwright:
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [
+            # Safari
+            {index: 1, os: 'macos-latest', project: 'webkit', total: 9},
+            {index: 2, os: 'macos-latest', project: 'webkit', total: 9},
+            {index: 3, os: 'macos-latest', project: 'webkit', total: 9},
+            {index: 4, os: 'macos-latest', project: 'webkit', total: 9},
+            {index: 5, os: 'macos-latest', project: 'webkit', total: 9},
+            {index: 6, os: 'macos-latest', project: 'webkit', total: 9},
+            {index: 7, os: 'macos-latest', project: 'webkit', total: 9},
+            {index: 8, os: 'macos-latest', project: 'webkit', total: 9},
+            {index: 9, os: 'macos-latest', project: 'webkit', total: 9},
+          ]
+    name: Playwright / ${{ matrix.shard.project }} / ${{ matrix.shard.index }} of ${{ matrix.shard.total }}
+    runs-on: ${{ matrix.shard.os }}
+    steps:
+      - uses: actions/checkout@v4.3.0
+        with:
+          submodules: 'recursive'
+          fetch-depth: 0
+      - uses: taiga-family/ci/actions/setup/variables@v1.146.0
+
+      - name: Mac OS X building all dependencies
+        if: ${{ contains( matrix.shard.os, 'macos') }}
+        run: brew install pkg-config cairo pango libpng jpeg-turbo giflib librsvg --force || echo ''
+
+      - uses: taiga-family/ci/actions/setup/node@v1.146.0
+        with:
+          validate-peer-deps: false
+
+      - uses: taiga-family/ci/actions/setup/playwright@v1.146.0
+      - run: |
+          git clone --depth 1 \
+              --branch snapshots/demo/next/main \
+              https://github.com/taiga-family/taiga-ui.git dist/main && \
+          find dist -name ".git" -exec rm -rf {} \; > /dev/null 2>&1 || echo "removed .git"
+
+      - uses: taiga-family/ci/actions/run/serve@v1.146.0
+        with:
+          port: 3333
+          directory: dist/main
+          replaceBaseUrl: false
+
+      - run: |
+          npx nx e2e demo-playwright -- \
+              --update-snapshots \
+              --project chromium \
+              --grep-invert 'Source code button' \
+              --shard ${{ matrix.shard.index }}/${{ matrix.shard.total }}
+
+      - run: |
+          npx nx e2e demo-playwright -- \
+              --project ${{ matrix.shard.project }} \
+              --grep-invert 'Source code button' \
+              --shard ${{ matrix.shard.index }}/${{ matrix.shard.total }}
+        continue-on-error: true
+
+      - uses: taiga-family/ci/actions/setup/playwright-combine-failed-screenshot@v1.144.0
+        env:
+          FAILED_SCREENSHOTS_PATH: ./taiga-ui/projects/demo-playwright/tests-results
+
+      - uses: actions/upload-artifact@v4.6.2
+        with:
+          path: ./taiga-ui/projects/demo-playwright/tests-results/**/*-retry${{ env.RETRY_COUNT }}/**/*.diff.png
+          name: ${{ env.PLAYWRIGHT_SNAPSHOTS_ARTIFACTS_KEY }}_${{ matrix.shard.index }}
+          if-no-files-found: ignore
+          compression-level: 0
+          retention-days: 1
+
+  # workaround for status checks -- check this one job instead of each individual E2E job in the matrix
+  # see https://github.com/orgs/community/discussions/9141#discussioncomment-2296809
+  playwright-composite-result:
+    name: Playwright E2E Tests matrix result
+    if: ${{ always() }}
+    needs: [playwright]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          result="${{ needs.playwright.result }}"
+          # mark as successful even if skipped
+          if [[ $result == "success" || $result == "skipped" ]]; then
+            exit 0
+          else
+            exit 1
+          fi
+
+  result:
+    name: E2E result
+    needs: [playwright]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.3.0
+      - uses: taiga-family/ci/actions/setup/variables@v1.144.0
+      - uses: taiga-family/ci/actions/setup/node@v1.144.0
+
+      - uses: actions/download-artifact@v4.3.0
+        continue-on-error: true
+        with:
+          path: ./total/playwright
+          pattern: playwright-snapshots-artifacts--*
+          merge-multiple: true
+
+      - uses: taiga-family/ci/actions/setup/playwright-diff-check@v1.144.0
+        with:
+          pw-result: ./total
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true

@@ -13,7 +13,7 @@ jobs:
           submodules: 'recursive'
           fetch-depth: 0
       - uses: taiga-family/ci/actions/setup/variables@v1.142.0
-      - uses: taiga-family/ci/actions/setup/node@v1.141.0
+      - uses: taiga-family/ci/actions/setup/node@v1.146.0
         with:
           validate-peer-deps: false
 
