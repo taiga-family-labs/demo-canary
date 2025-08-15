@@ -13,7 +13,10 @@ jobs:
         with:
           persist-credentials: false
       - uses: taiga-family/ci/actions/setup/variables@v1.144.0
-      - uses: taiga-family/ci/actions/setup/node@v1.144.0
+      - uses: taiga-family/ci/actions/setup/node@v1.141.0
+        with:
+          validate-peer-deps: false
+
       - run: |
           npm run prettier -- --check
 
