@@ -35,7 +35,7 @@ jobs:
         if: steps.update.outputs.changes == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.TAIGA_FAMILY_BOT_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           branch: submodule-update
           commit-message: 'chore: update submodules'
           title: Submodule Updates
