@@ -17,9 +17,6 @@ jobs:
           fetch-depth: 0
       - uses: taiga-family/ci/actions/setup/variables@v1.142.0
 
-      - uses: taiga-family/ci/actions/setup/variables@v1.142.0
-      - uses: taiga-family/ci/actions/setup/node@v1.142.0
-
       - name: Update all submodules to latest commits
         id: update
         run: |
