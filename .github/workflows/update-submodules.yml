@@ -13,6 +13,9 @@ jobs:
           submodules: 'recursive'
           fetch-depth: 0
       - uses: taiga-family/ci/actions/setup/variables@v1.142.0
+      - uses: taiga-family/ci/actions/setup/node@v1.141.0
+        with:
+          validate-peer-deps: false
 
       - name: Update all submodules to latest commits
         id: update
@@ -25,6 +28,10 @@ jobs:
             echo "changes=false" >> $GITHUB_OUTPUT
           else
             echo "changes=true" >> $GITHUB_OUTPUT
+            
+            rm -rf .nx coverage/ dist .angular/ node_modules/ **/node_modules/ package-lock.json && npm i --verbose && npm i
+            git add .
+            
             git commit -m "chore: update submodules to latest commits"
           fi
 
