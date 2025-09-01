@@ -33,24 +33,24 @@ jobs:
         with:
           submodules: 'recursive'
           fetch-depth: 0
-      - uses: taiga-family/ci/actions/setup/variables@v1.146.0
+      - uses: taiga-family/ci/actions/setup/variables@v1.152.0
 
       - name: Mac OS X building all dependencies
         if: ${{ contains( matrix.shard.os, 'macos') }}
         run: brew install pkg-config cairo pango libpng jpeg-turbo giflib librsvg --force || echo ''
 
-      - uses: taiga-family/ci/actions/setup/node@v1.146.0
+      - uses: taiga-family/ci/actions/setup/node@v1.152.0
         with:
           validate-peer-deps: false
 
-      - uses: taiga-family/ci/actions/setup/playwright@v1.146.0
+      - uses: taiga-family/ci/actions/setup/playwright@v1.152.0
       - run: |
           git clone --depth 1 \
               --branch snapshots/demo/next/main \
               https://github.com/taiga-family/taiga-ui.git dist/main && \
           find dist -name ".git" -exec rm -rf {} \; > /dev/null 2>&1 || echo "removed .git"
 
-      - uses: taiga-family/ci/actions/run/serve@v1.146.0
+      - uses: taiga-family/ci/actions/run/serve@v1.152.0
         with:
           port: 3333
           directory: dist/main
